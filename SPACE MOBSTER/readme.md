@@ -9,3 +9,10 @@ The whole objective is to try and survive as long as possible and create some as
 
 > - The game has a cute main menu.
 > - The game got a beautiful background and music.
+
+## ScreenShots
+
+<div>
+<img src="https://user-images.githubusercontent.com/109455495/204137569-3d5440a8-517f-4b6c-b281-1fbef8448f7e.png"/>
+
+</div>
