@@ -14,12 +14,15 @@ class GameScene():
 	def main_menu(self):
 		global volume
 		global currentstart
-		global currentcontrol		
+		global currentcontrol
+		global window
+		global switch
 
-		for event in pygame.event.get():
-			screen.blit(menu_bg,(0,0))
-			screen.blit(currentstart,start_rect)
-			screen.blit(currentcontrol,control_rect)
+		screen.blit(menu_bg,(0,0))
+		screen.blit(currentstart,start_rect)
+		screen.blit(currentcontrol,control_rect)	
+
+		for event in pygame.event.get():			
 			
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -31,14 +34,30 @@ class GameScene():
 					pygame.quit()
 					sys.exit()
 
+				if event.key == pygame.K_RETURN:
+					if window == 2:
+						switch = window
+						break
+
+
+					elif window == 3:
+						switch = window
+						break
+
 				if event.key == pygame.K_UP:
-						currentstart = start_but2
-						currentcontrol = control_but					
+					    select_sfx.play()
+					    currentstart = start_but2
+					    currentcontrol = control_but
+					    window = 2
+					    							
 
 				elif event.key == pygame.K_DOWN:
-					    currentstart = start_but
-					    currentcontrol = control_but2
-				
+						select_sfx.play()
+						currentstart = start_but
+						currentcontrol = control_but2
+						window = 3
+						
+
 				if event.key == pygame.K_m:
 					if volume > 0.0:
 						volume = 0.0
@@ -59,6 +78,7 @@ class GameScene():
 						volume = round(volume,1)
 						print(volume)
 						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
 
 				if event.key == pygame.K_KP_MINUS:
 					if volume == 0.0:
@@ -69,11 +89,38 @@ class GameScene():
 						volume = round(volume,1)
 						print(volume)					
 						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
 		
 		pygame.display.flip()
 		fps.tick(60)
 
-	def main_game(self):	
+	def main_game(self):
+		global switch
+
+		screen.fill('black')
+
+		for event in pygame.event.get():
+	   		
+	   		if event.type == pygame.QUIT:
+	   			pygame.quit()
+	   			sys.exit()
+
+	   		if event.type == pygame.KEYDOWN:
+
+	   			if event.key == pygame.K_ESCAPE:
+	   				switch = 1
+	   				break	   				
+
+		screen.blit(game_bg,(0,0))
+		pygame.display.update()
+		pygame.display.flip()
+		fps.tick(60)
+
+	def control_window(self):
+		global switch
+
+		screen.fill('black')	
+		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
@@ -82,11 +129,12 @@ class GameScene():
 			if event.type == pygame.KEYDOWN:             
 
 				if event.key == pygame.K_ESCAPE:
-					pygame.quit()
-					sys.exit()     	
-		
-		screen.blit(bg,(0,0))
+					switch = 1
+					break
+
+		pygame.display.update()
 		pygame.display.flip()
+		fps.tick(60)     					
 
 
 #initializtion
@@ -134,8 +182,11 @@ mixer.music.load('CYBERPUNK.mp3')
 
 mixer.music.play(-1)
 
+select_sfx = pygame.mixer.Sound('selector.mp3')
 
 volume = 1.0
+
+window = 1
 
 #objects
 #- - - - - - - - - - - - - - - ROCKET - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,7 +195,17 @@ points = [600, 700],  [640, 620], [680, 700]
 
 # - - - - - - - - - - - - - - -Game Loop - - - - - - - - - - - - - - - - - - - - -  - - - 
 
+switch = 1
+
 working = True 
 
 while working:
-	  GameScene.main_menu()
+	if switch == 1:
+		GameScene.main_menu()
+
+	elif switch == 2:	
+		GameScene.main_game()
+
+	elif switch == 3:
+		GameScene.control_window()	
+	  
