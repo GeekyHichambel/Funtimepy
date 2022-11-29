@@ -5,40 +5,73 @@ import random
 from pygame.locals import *
 from pygame import mixer 
 
-#- - - - - - - - - - - - - - - - - -  GAME SCENES   - - - - - - - - - - - - - - - - - - - - - - - - - 
+#- - - - - - - - - - - - - - - - - -  GAME FUNCTIONS    - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 class GameScene():
 	def __init__(self):
 		self.scene = 'game scene'
 
 	def main_menu(self):
 		global volume
+		global currentstart
+		global currentcontrol		
 
 		for event in pygame.event.get():
+			screen.blit(menu_bg,(0,0))
+			screen.blit(currentstart,start_rect)
+			screen.blit(currentcontrol,control_rect)
+			
 			if event.type == pygame.QUIT:
 				pygame.quit()
-				sys.exit()
-			
+				sys.exit()		
+
 			if event.type == pygame.KEYDOWN:             
 
 				if event.key == pygame.K_ESCAPE:
 					pygame.quit()
 					sys.exit()
 
+				if event.key == pygame.K_UP:
+						currentstart = start_but2
+						currentcontrol = control_but					
+
+				elif event.key == pygame.K_DOWN:
+					    currentstart = start_but
+					    currentcontrol = control_but2
+				
 				if event.key == pygame.K_m:
-					if volume:
-						mixer.music.set_volume(0.0)
-						volume = False
+					if volume > 0.0:
+						volume = 0.0
+						print('muted')
+						mixer.music.set_volume(volume)
 
 					else:
-						mixer.music.set_volume(1.0)
-						volume = True
+						print('unmuted')
+						volume = 1.0
+						mixer.music.set_volume(volume)						
+				
+				if event.key == pygame.K_KP_PLUS:
+					if volume == 1.0:
+						print('max')
 
+					else:
+						volume+=(0.1)
+						volume = round(volume,1)
+						print(volume)
+						mixer.music.set_volume(volume)
+
+				if event.key == pygame.K_KP_MINUS:
+					if volume == 0.0:
+						print('min')			
+
+					else:
+						volume-=(0.1)
+						volume = round(volume,1)
+						print(volume)					
+						mixer.music.set_volume(volume)
 		
-		screen.blit(menu_bg,(0,0))
-		screen.blit(start_but,(screen_w/2-210,screen_h/2-150))
-		screen.blit(control_but,(screen_w/2-210,screen_h/2+80))
-
 		pygame.display.flip()
+		fps.tick(60)
 
 	def main_game(self):	
 		for event in pygame.event.get():
@@ -60,6 +93,7 @@ class GameScene():
 pygame.init()
 pygame.font.init()
 GameScene = GameScene()
+fps = pygame.time.Clock()
 
 #attributes
 screen_w=1280
@@ -78,14 +112,30 @@ menu_bg = pygame.image.load("main_menu.jpg")
 
 start_but = pygame.image.load("Startbut.png")
 
+start_rect = start_but.get_rect(center = [640,400])
+
+start_but2 = pygame.image.load("Startbut(2).png")
+
 control_but = pygame.image.load("Controlbut.png")
+
+control_but2 = pygame.image.load("Controlbut(2).png")
+
+control_rect = control_but.get_rect(center = [640,600])
+
+currentstart = start_but
+
+currentcontrol = control_but
+
+#sprites
+object_sprites = pygame.sprite.Group()
 
 #music
 mixer.music.load('CYBERPUNK.mp3')
 
 mixer.music.play(-1)
 
-volume = True
+
+volume = 1.0
 
 #objects
 #- - - - - - - - - - - - - - - ROCKET - - - - - - - - - - - - - - - - - - - - - - - -
