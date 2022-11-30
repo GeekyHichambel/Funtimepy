@@ -15,4 +15,6 @@ The whole objective is to try and survive as long as possible and create some as
 <div>
 <img src="https://user-images.githubusercontent.com/109455495/204137569-3d5440a8-517f-4b6c-b281-1fbef8448f7e.png"/>
 
+<img src="https://user-images.githubusercontent.com/109455495/204879512-ac9286f0-be90-481d-9f9b-3e1e4b126eb5.png"/>
+
 </div>
