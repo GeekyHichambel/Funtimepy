@@ -19,7 +19,7 @@ class GameScene():
 		global switch
 
 		screen.blit(menu_bg,(0,0))
-		screen.blit(currentstart,start_rect)
+		screen.blit(currentstart,start_rect) 
 		screen.blit(currentcontrol,control_rect)	
 
 		for event in pygame.event.get():			
@@ -36,11 +36,13 @@ class GameScene():
 
 				if event.key == pygame.K_RETURN:
 					if window == 2:
+						switch_sfx.play()
 						switch = window
 						break
 
 
 					elif window == 3:
+						switch_sfx.play()
 						switch = window
 						break
 
@@ -63,11 +65,15 @@ class GameScene():
 						volume = 0.0
 						print('muted')
 						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)
 
 					else:
 						print('unmuted')
 						volume = 1.0
-						mixer.music.set_volume(volume)						
+						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)						
 				
 				if event.key == pygame.K_KP_PLUS:
 					if volume == 1.0:
@@ -79,6 +85,7 @@ class GameScene():
 						print(volume)
 						mixer.music.set_volume(volume)
 						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)
 
 				if event.key == pygame.K_KP_MINUS:
 					if volume == 0.0:
@@ -90,12 +97,14 @@ class GameScene():
 						print(volume)					
 						mixer.music.set_volume(volume)
 						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)
 		
 		pygame.display.flip()
 		fps.tick(60)
 
 	def main_game(self):
 		global switch
+		global volume
 
 		screen.fill('black')
 
@@ -108,8 +117,48 @@ class GameScene():
 	   		if event.type == pygame.KEYDOWN:
 
 	   			if event.key == pygame.K_ESCAPE:
+	   				switch_sfx.play()
 	   				switch = 1
-	   				break	   				
+	   				break
+
+	   			if event.key == pygame.K_m:
+	   				if volume > 0.0:
+	   					volume = 0.0
+	   					print('muted')
+	   					mixer.music.set_volume(volume)
+	   					select_sfx.set_volume(volume)
+	   					switch_sfx.set_volume(volume)
+
+	   				else:
+	   					print('unmuted')
+	   					volume = 1.0
+	   					mixer.music.set_volume(volume)
+	   					select_sfx.set_volume(volume)
+	   					switch_sfx.set_volume(volume)						
+
+	   			if event.key == pygame.K_KP_PLUS:
+	   				if volume == 1.0:
+	   					print('max')
+
+	   				else:
+	   					volume+=(0.1)
+	   					volume = round(volume,1)
+	   					print(volume)
+	   					mixer.music.set_volume(volume)
+	   					select_sfx.set_volume(volume)
+	   					switch_sfx.set_volume(volume)
+
+	   			if event.key == pygame.K_KP_MINUS:
+	   				if volume == 0.0:
+	   					print('min')
+
+	   				else:
+	   					volume-=(0.1)
+	   					volume = round(volume,1)
+	   					print(volume)					
+	   					mixer.music.set_volume(volume)
+	   					select_sfx.set_volume(volume)
+	   					switch_sfx.set_volume(volume)	   				
 
 		screen.blit(game_bg,(0,0))
 		pygame.display.update()
@@ -118,6 +167,7 @@ class GameScene():
 
 	def control_window(self):
 		global switch
+		global volume
 
 		screen.fill('black')	
 		
@@ -129,9 +179,50 @@ class GameScene():
 			if event.type == pygame.KEYDOWN:             
 
 				if event.key == pygame.K_ESCAPE:
+					switch_sfx.play()
 					switch = 1
 					break
 
+				if event.key == pygame.K_m:
+					if volume > 0.0:
+						volume = 0.0
+						print('muted')
+						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)
+
+					else:
+						print('unmuted')
+						volume = 1.0
+						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)						
+				
+				if event.key == pygame.K_KP_PLUS:
+					if volume == 1.0:
+						print('max')
+
+					else:
+						volume+=(0.1)
+						volume = round(volume,1)
+						print(volume)
+						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)
+
+				if event.key == pygame.K_KP_MINUS:
+					if volume == 0.0:
+						print('min')			
+
+					else:
+						volume-=(0.1)
+						volume = round(volume,1)
+						print(volume)					
+						mixer.music.set_volume(volume)
+						select_sfx.set_volume(volume)
+						switch_sfx.set_volume(volume)
+
+		screen.blit(control_menu,(0,0))
 		pygame.display.update()
 		pygame.display.flip()
 		fps.tick(60)     					
@@ -158,6 +249,8 @@ game_bg = pygame.image.load("BG.jpg")
 
 menu_bg = pygame.image.load("main_menu.jpg")
 
+control_menu = pygame.image.load("controlpage.jpg")
+
 start_but = pygame.image.load("Startbut.png")
 
 start_rect = start_but.get_rect(center = [640,400])
@@ -174,6 +267,8 @@ currentstart = start_but
 
 currentcontrol = control_but
 
+
+
 #sprites
 object_sprites = pygame.sprite.Group()
 
@@ -183,6 +278,8 @@ mixer.music.load('CYBERPUNK.mp3')
 mixer.music.play(-1)
 
 select_sfx = pygame.mixer.Sound('selector.mp3')
+
+switch_sfx = pygame.mixer.Sound('switch__.wav')
 
 volume = 1.0
 
@@ -207,5 +304,4 @@ while working:
 		GameScene.main_game()
 
 	elif switch == 3:
-		GameScene.control_window()	
-	  
+		GameScene.control_window()		
