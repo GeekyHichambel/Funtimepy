@@ -6,7 +6,6 @@ from pygame.locals import *
 from pygame import mixer 
 
 #- - - - - - - - - - - - - - - - - -  GAME FUNCTIONS    - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 class GameScene():
 	def __init__(self):
 		self.scene = 'game scene'
@@ -31,6 +30,8 @@ class GameScene():
 			if event.type == pygame.KEYDOWN:             
 
 				if event.key == pygame.K_ESCAPE:
+					switch_sfx.play()
+					pygame.time.delay(400)
 					pygame.quit()
 					sys.exit()
 
@@ -105,64 +106,88 @@ class GameScene():
 	def main_game(self):
 		global switch
 		global volume
+		global moving_left
+		global moving_right
+		global x_axis
+		global y_axis
 
 		screen.fill('black')
 
 		for event in pygame.event.get():
-	   		
-	   		if event.type == pygame.QUIT:
-	   			pygame.quit()
-	   			sys.exit()
+		   		
+		   	if event.type == pygame.QUIT:
+		   		pygame.quit()
+		   		sys.exit()
 
-	   		if event.type == pygame.KEYDOWN:
+		   	if event.type == pygame.KEYDOWN:
 
-	   			if event.key == pygame.K_ESCAPE:
-	   				switch_sfx.play()
-	   				switch = 1
-	   				break
+		   		if event.key == pygame.K_ESCAPE:
+		   			switch_sfx.play()
+		   			switch = 1
+		   			break
 
-	   			if event.key == pygame.K_m:
-	   				if volume > 0.0:
-	   					volume = 0.0
-	   					print('muted')
-	   					mixer.music.set_volume(volume)
-	   					select_sfx.set_volume(volume)
-	   					switch_sfx.set_volume(volume)
+		   		if event.key == pygame.K_a:
+		   			moving_left = True 
+		   				
+		   		if event.key == pygame.K_d:
+		   			moving_right = True	   					
 
-	   				else:
-	   					print('unmuted')
-	   					volume = 1.0
-	   					mixer.music.set_volume(volume)
-	   					select_sfx.set_volume(volume)
-	   					switch_sfx.set_volume(volume)						
+		   		if event.key == pygame.K_m:
+		   			if volume > 0.0:
+		   				volume = 0.0
+		   				print('muted')
+		   				mixer.music.set_volume(volume)
+		   				select_sfx.set_volume(volume)
+		   				switch_sfx.set_volume(volume)
 
-	   			if event.key == pygame.K_KP_PLUS:
-	   				if volume == 1.0:
-	   					print('max')
+		   			else:
+		   				print('unmuted')
+		   				volume = 1.0
+		   				mixer.music.set_volume(volume)
+		   				select_sfx.set_volume(volume)
+		   				switch_sfx.set_volume(volume)						
 
-	   				else:
-	   					volume+=(0.1)
-	   					volume = round(volume,1)
-	   					print(volume)
-	   					mixer.music.set_volume(volume)
-	   					select_sfx.set_volume(volume)
-	   					switch_sfx.set_volume(volume)
+		   		if event.key == pygame.K_KP_PLUS:
+		   			if volume == 1.0:
+		   				print('max')
 
-	   			if event.key == pygame.K_KP_MINUS:
-	   				if volume == 0.0:
-	   					print('min')
+		   			else:
+		   				volume+=(0.1)
+		   				volume = round(volume,1)
+		   				print(volume)
+		   				mixer.music.set_volume(volume)
+		   				select_sfx.set_volume(volume)
+		   				switch_sfx.set_volume(volume)
 
-	   				else:
-	   					volume-=(0.1)
-	   					volume = round(volume,1)
-	   					print(volume)					
-	   					mixer.music.set_volume(volume)
-	   					select_sfx.set_volume(volume)
-	   					switch_sfx.set_volume(volume)	   				
+		   		if event.key == pygame.K_KP_MINUS:
+		   			if volume == 0.0:
+		   				print('min')
 
+		   			else:
+		   				volume-=(0.1)
+		   				volume = round(volume,1)
+		   				print(volume)					
+		   				mixer.music.set_volume(volume)
+		   				select_sfx.set_volume(volume)
+		   				switch_sfx.set_volume(volume)
+
+		   	elif event.type == pygame.KEYUP:
+
+		   		if event.key == pygame.K_a:
+		   			moving_left = False
+
+		   		if event.key == pygame.K_d:
+		   			moving_right = False
+
+		if(moving_left) and x_axis>0:
+	   		x_axis-=12
+
+		elif(moving_right) and x_axis<1130:
+	   		x_axis+=12	
+		
 		screen.blit(game_bg,(0,0))
+		screen.blit(rocket,(x_axis,y_axis))
 		pygame.display.update()
-		pygame.display.flip()
 		fps.tick(60)
 
 	def control_window(self):
@@ -267,8 +292,6 @@ currentstart = start_but
 
 currentcontrol = control_but
 
-
-
 #sprites
 object_sprites = pygame.sprite.Group()
 
@@ -287,16 +310,24 @@ window = 1
 
 #objects
 #- - - - - - - - - - - - - - - ROCKET - - - - - - - - - - - - - - - - - - - - - - - -
-color =  (102, 153, 153)
-points = [600, 700],  [640, 620], [680, 700]
+rocket = pygame.image.load("rocket.png")
+
+x_axis = 590
+
+y_axis = 570
 
 # - - - - - - - - - - - - - - -Game Loop - - - - - - - - - - - - - - - - - - - - -  - - - 
 
 switch = 1
 
-working = True 
+working = True
+
+moving_left = False 
+
+moving_right = False
 
 while working:
+
 	if switch == 1:
 		GameScene.main_menu()
 
@@ -304,4 +335,4 @@ while working:
 		GameScene.main_game()
 
 	elif switch == 3:
-		GameScene.control_window()		
+		GameScene.control_window()	
