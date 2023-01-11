@@ -1,4 +1,3 @@
-from tkinter import *
 import pygame
 import sys
 import random
@@ -45,8 +44,7 @@ pygame.init()
 pygame.font.init()
 font = pygame.font.SysFont('Arial',32)
 fps = pygame.time.Clock()
-Score = score()
-T_K = Tk() 
+Score = score() 
 
 #-------------  ATTRIBUTES ----------#
 
